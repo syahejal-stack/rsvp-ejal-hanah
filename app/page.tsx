@@ -21,6 +21,7 @@ export default function Home() {
   const [done, setDone] = useState(false);
   const [guestNotes, setGuestNotes] = useState<GuestNote[]>([]);
   const [musicPlaying, setMusicPlaying] = useState(false);
+  const [videoMuted, setVideoMuted] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -34,6 +35,14 @@ export default function Home() {
     } else {
       audio.pause();
     }
+  }
+
+  function toggleVideoSound() {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setVideoMuted(video.muted);
+    void video.play();
   }
 
   const loadGuestNotes = useCallback(async () => {
@@ -76,32 +85,35 @@ export default function Home() {
 
   return (
     <main className="page-shell">
-      <div className="floral floral-top" aria-hidden="true"><i /><b /><span /></div>
-      <div className="floral floral-bottom" aria-hidden="true"><i /><b /><span /></div>
+      <section className="video-hero" aria-label="Video Ejal dan Hanah">
+        <video
+          ref={videoRef}
+          autoPlay
+          muted={videoMuted}
+          loop
+          playsInline
+          preload="auto"
+          src="/video/video-ejal-hanah.mp4"
+          onPlay={() => audioRef.current?.pause()}
+        >
+          Pelayar anda tidak menyokong video.
+        </video>
+        <button className="video-sound" type="button" onClick={toggleVideoSound}>
+          {videoMuted ? "Buka suara" : "Tutup suara"}
+        </button>
+        <a className="scroll-cue" href="#jemputan" aria-label="Lihat maklumat jemputan">↓</a>
+      </section>
 
-      <section className="invite-card" aria-labelledby="page-title">
+      <section className="invite-zone" id="jemputan">
+        <div className="floral floral-top" aria-hidden="true"><i /><b /><span /></div>
+        <div className="floral floral-bottom" aria-hidden="true"><i /><b /><span /></div>
+
+        <section className="invite-card" aria-labelledby="page-title">
         <div className="ornament"><span />◆<span /></div>
         <p className="bismillah" lang="ar" dir="rtl">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
         <p className="eyebrow">JEMPUTAN MAJLIS PERKAHWINAN</p>
         <h1 id="page-title">Ejal <em>&amp;</em> Hanah</h1>
         <p className="date">Ahad · 10 Januari 2027</p>
-
-        <section className="video-section" aria-labelledby="video-title">
-          <p className="section-kicker">VIDEO JEMPUTAN</p>
-          <h2 id="video-title">Dengan penuh kesyukuran</h2>
-          <div className="video-frame">
-            <video
-              ref={videoRef}
-              controls
-              playsInline
-              preload="metadata"
-              src="/video/video-ejal-hanah.mp4"
-              onPlay={() => audioRef.current?.pause()}
-            >
-              Pelayar anda tidak menyokong video.
-            </video>
-          </div>
-        </section>
 
         <section className="location-section" aria-labelledby="location-title">
           <p className="section-kicker">LOKASI MAJLIS</p>
@@ -196,6 +208,7 @@ export default function Home() {
 
         <p className="closing">Terima kasih atas doa dan kesudian anda meraikan hari bahagia kami.</p>
         <div className="ornament bottom"><span />◆<span /></div>
+        </section>
       </section>
     </main>
   );
