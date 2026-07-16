@@ -23,7 +23,6 @@ export default function Home() {
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [inviteOpened, setInviteOpened] = useState(false);
   const [opening, setOpening] = useState(false);
-  const [returningVisitor, setReturningVisitor] = useState(false);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -60,8 +59,6 @@ export default function Home() {
       if (backdrop) tasks.push(backdrop.play());
 
       await Promise.all(tasks);
-      window.localStorage.setItem("ejal-hanah-opened", "1");
-      setReturningVisitor(true);
       window.setTimeout(() => {
         setInviteOpened(true);
         setOpening(false);
@@ -78,8 +75,6 @@ export default function Home() {
     videoRef.current?.pause();
     backdropRef.current?.pause();
 
-    window.localStorage.setItem("ejal-hanah-opened", "1");
-    setReturningVisitor(true);
     setInviteOpened(true);
     setMusicPlaying(false);
 
@@ -146,7 +141,6 @@ export default function Home() {
 
   useEffect(() => {
     void loadGuestNotes();
-    setReturningVisitor(window.localStorage.getItem("ejal-hanah-opened") === "1");
   }, [loadGuestNotes]);
 
   useEffect(() => {
@@ -228,31 +222,22 @@ export default function Home() {
         <div className="flower-corner flower-corner-right" aria-hidden="true"><i /><b /><span /></div>
 
         {!inviteOpened && (
-          <div className={returningVisitor ? "opening-actions returning" : "opening-actions"}>
-            {returningVisitor && (
-              <button className="skip-video primary-skip" type="button" onClick={() => void skipVideo()}>
-                Terus ke maklumat majlis
-                <small>Alamat, Maps dan RSVP</small>
-              </button>
-            )}
+          <div className="opening-actions simple">
+            <button className="skip-video primary-skip" type="button" onClick={() => void skipVideo()}>
+              Terus ke maklumat majlis
+              <small>Alamat, Maps dan RSVP</small>
+            </button>
 
             <button
-              className={opening ? "open-invitation opening" : "open-invitation"}
+              className={opening ? "play-button opening" : "play-button"}
               type="button"
               onClick={openInvitation}
               disabled={opening}
+              aria-label="Play"
             >
-              <span className="envelope-icon" aria-hidden="true" />
-              <strong>{returningVisitor ? "Tonton Semula Video" : "Buka Jemputan"}</strong>
-              <small>Video dan lagu akan bermula</small>
+              <span aria-hidden="true">▶</span>
+              Play
             </button>
-
-            {!returningVisitor && (
-              <button className="skip-video" type="button" onClick={() => void skipVideo()}>
-                Langkau video
-                <small>Terus ke alamat &amp; RSVP</small>
-              </button>
-            )}
           </div>
         )}
 

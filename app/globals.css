@@ -664,3 +664,41 @@ th { background:#f4f1e9; color:#6d746c; font-size:11px; letter-spacing:.08em; te
 .opening-actions.returning .envelope-icon {
   display:none;
 }
+
+
+/* Susunan tetap: maklumat majlis + Play */
+.opening-actions.simple {
+  gap:14px;
+}
+.play-button {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-width:136px;
+  padding:12px 22px;
+  border:1px solid rgba(244,226,190,.72);
+  border-radius:999px;
+  background:rgba(42,50,41,.68);
+  color:#fff;
+  box-shadow:0 10px 25px rgba(0,0,0,.22);
+  backdrop-filter:blur(8px);
+  cursor:pointer;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:17px;
+  letter-spacing:.03em;
+  transition:opacity .35s ease,transform .35s ease,filter .2s ease;
+}
+.play-button span {
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:13px;
+}
+.play-button:hover {
+  filter:brightness(1.08);
+  transform:translateY(-2px);
+}
+.play-button.opening {
+  opacity:0;
+  transform:translateY(8px) scale(.96);
+  pointer-events:none;
+}
