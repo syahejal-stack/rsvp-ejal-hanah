@@ -129,3 +129,106 @@ th { background:#f4f1e9; color:#6d746c; font-size:11px; letter-spacing:.08em; te
   .page-shell { padding:0; }
   .invite-zone { padding:14px 10px; align-items:start; }
 }
+
+
+/* Effect bunga bergerak pada video pembukaan */
+.video-hero:after {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(to bottom, rgba(20,22,18,.08), transparent 32%, transparent 68%, rgba(15,18,15,.28)),
+    radial-gradient(circle at 50% 45%, transparent 35%, rgba(15,18,15,.18) 100%);
+}
+.video-hero video {
+  animation:hero-kenburns 16s ease-in-out infinite alternate;
+  transform-origin:center center;
+}
+.hero-glow {
+  position:absolute;
+  inset:-20%;
+  z-index:1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(255,240,218,.2), transparent 24%),
+    radial-gradient(circle at 82% 70%, rgba(213,230,207,.18), transparent 27%);
+  animation:hero-glow-drift 8s ease-in-out infinite alternate;
+}
+.petal-rain {
+  position:absolute;
+  inset:0;
+  z-index:2;
+  overflow:hidden;
+  pointer-events:none;
+}
+.petal-rain span {
+  position:absolute;
+  top:-12%;
+  width:15px;
+  height:24px;
+  border-radius:75% 25% 70% 30%;
+  background:linear-gradient(145deg, rgba(255,248,239,.92), rgba(229,190,173,.78));
+  box-shadow:0 2px 8px rgba(30,30,20,.12);
+  opacity:.76;
+  animation:petal-fall linear infinite;
+}
+.petal-rain span:nth-child(1){left:4%;animation-duration:9s;animation-delay:-2s;transform:scale(.75) rotate(12deg)}
+.petal-rain span:nth-child(2){left:13%;animation-duration:13s;animation-delay:-8s;transform:scale(.55) rotate(55deg)}
+.petal-rain span:nth-child(3){left:24%;animation-duration:11s;animation-delay:-5s;transform:scale(.85) rotate(95deg)}
+.petal-rain span:nth-child(4){left:34%;animation-duration:15s;animation-delay:-10s;transform:scale(.5) rotate(135deg)}
+.petal-rain span:nth-child(5){left:45%;animation-duration:10s;animation-delay:-4s;transform:scale(.72) rotate(180deg)}
+.petal-rain span:nth-child(6){left:55%;animation-duration:14s;animation-delay:-9s;transform:scale(.6) rotate(210deg)}
+.petal-rain span:nth-child(7){left:64%;animation-duration:12s;animation-delay:-1s;transform:scale(.9) rotate(250deg)}
+.petal-rain span:nth-child(8){left:73%;animation-duration:16s;animation-delay:-11s;transform:scale(.58) rotate(285deg)}
+.petal-rain span:nth-child(9){left:82%;animation-duration:10.5s;animation-delay:-6s;transform:scale(.78) rotate(320deg)}
+.petal-rain span:nth-child(10){left:91%;animation-duration:14.5s;animation-delay:-3s;transform:scale(.52) rotate(35deg)}
+.petal-rain span:nth-child(11){left:29%;animation-duration:17s;animation-delay:-13s;transform:scale(.46) rotate(80deg)}
+.petal-rain span:nth-child(12){left:68%;animation-duration:18s;animation-delay:-12s;transform:scale(.7) rotate(160deg)}
+
+.flower-corner {
+  position:absolute;
+  z-index:2;
+  width:170px;
+  height:170px;
+  pointer-events:none;
+  opacity:.55;
+  filter:drop-shadow(0 8px 18px rgba(25,35,25,.15));
+  animation:flower-sway 5s ease-in-out infinite alternate;
+}
+.flower-corner-left { left:-45px; top:-35px; transform:rotate(-25deg); }
+.flower-corner-right { right:-48px; bottom:-34px; transform:rotate(155deg); animation-delay:-2.5s; }
+.flower-corner:before,.flower-corner:after,.flower-corner i,.flower-corner b,.flower-corner span {
+  content:"";
+  position:absolute;
+  border-radius:70% 30% 70% 30%;
+  transform-origin:bottom center;
+}
+.flower-corner:before { width:55px;height:100px;left:55px;top:20px;background:linear-gradient(145deg,#95aa91,#516c58);transform:rotate(-32deg); }
+.flower-corner:after { width:48px;height:86px;left:92px;top:54px;background:linear-gradient(145deg,#bdc9b5,#718970);transform:rotate(38deg); }
+.flower-corner i { width:70px;height:70px;left:16px;top:70px;background:radial-gradient(circle,#d2a98e 0 10%,#f0d6c6 11% 31%,#deb9a7 32% 52%,#f7e6dc 53% 70%,transparent 71%);border-radius:50%; }
+.flower-corner b { width:52px;height:52px;left:91px;top:12px;background:radial-gradient(circle,#c99f78 0 9%,#efe2d1 10% 31%,#fff9ee 32% 68%,transparent 69%);border-radius:50%; }
+.flower-corner span { width:35px;height:65px;left:20px;top:17px;background:#80987d;transform:rotate(-58deg); }
+
+@keyframes hero-kenburns {
+  from { transform:scale(1.015) translate3d(-.4%,0,0); }
+  to { transform:scale(1.075) translate3d(.7%,-.5%,0); }
+}
+@keyframes hero-glow-drift {
+  from { transform:translate3d(-2%,-1%,0) scale(1); opacity:.7; }
+  to { transform:translate3d(2%,2%,0) scale(1.08); opacity:1; }
+}
+@keyframes petal-fall {
+  0% { translate:0 -10vh; rotate:0deg; opacity:0; }
+  12% { opacity:.78; }
+  50% { translate:32px 55vh; rotate:190deg; }
+  100% { translate:-22px 118vh; rotate:420deg; opacity:0; }
+}
+@keyframes flower-sway {
+  from { margin-top:0; filter:drop-shadow(0 8px 18px rgba(25,35,25,.13)); }
+  to { margin-top:8px; filter:drop-shadow(0 12px 24px rgba(25,35,25,.2)); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .video-hero video,.hero-glow,.petal-rain span,.flower-corner { animation:none; }
+}

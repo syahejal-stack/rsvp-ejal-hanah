@@ -98,6 +98,15 @@ export default function Home() {
         >
           Pelayar anda tidak menyokong video.
         </video>
+        <div className="hero-glow" aria-hidden="true" />
+        <div className="petal-rain" aria-hidden="true">
+          {Array.from({ length: 12 }).map((_, index) => (
+            <span key={index} />
+          ))}
+        </div>
+        <div className="flower-corner flower-corner-left" aria-hidden="true"><i /><b /><span /></div>
+        <div className="flower-corner flower-corner-right" aria-hidden="true"><i /><b /><span /></div>
+
         <button className="video-sound" type="button" onClick={toggleVideoSound}>
           {videoMuted ? "Buka suara" : "Tutup suara"}
         </button>
