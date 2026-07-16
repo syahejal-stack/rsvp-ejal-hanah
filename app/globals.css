@@ -456,7 +456,7 @@ th { background:#f4f1e9; color:#6d746c; font-size:11px; letter-spacing:.08em; te
 }
 .countdown-grid {
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(3,1fr);
   gap:7px;
   margin-top:13px;
 }
@@ -551,4 +551,40 @@ th { background:#f4f1e9; color:#6d746c; font-size:11px; letter-spacing:.08em; te
 
 @media (prefers-reduced-motion:reduce) {
   .open-invitation { animation:none; }
+}
+
+
+/* Butang Simpan Tarikh tunggal selepas countdown */
+.save-date-button {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin:0 auto 8px;
+  padding:11px 17px;
+  border:1px solid #d8cfbf;
+  border-radius:999px;
+  background:#fffdfa;
+  color:var(--deep);
+  text-decoration:none;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.03em;
+  box-shadow:0 6px 16px rgba(74,66,52,.07);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.save-date-button:hover {
+  transform:translateY(-2px);
+  border-color:#aebba9;
+  box-shadow:0 9px 21px rgba(74,66,52,.11);
+}
+.save-date-button span {
+  display:grid;
+  place-items:center;
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  background:#edf2eb;
+  color:var(--deep);
+  font:600 13px Georgia,serif;
 }

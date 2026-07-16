@@ -23,7 +23,6 @@ export default function Home() {
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [inviteOpened, setInviteOpened] = useState(false);
   const [opening, setOpening] = useState(false);
-  const [shareMessage, setShareMessage] = useState("");
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -109,82 +108,6 @@ export default function Home() {
       document.getElementById("jemputan")?.scrollIntoView({ behavior: "smooth" });
     }, 180);
   }
-
-  function saveDate() {
-    const calendar = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//Ejal & Hanah//Jemputan Perkahwinan//MS",
-      "BEGIN:VEVENT",
-      "UID:ejal-hanah-20270110@jemputan",
-      "DTSTART;VALUE=DATE:20270110",
-      "DTEND;VALUE=DATE:20270111",
-      "SUMMARY:Majlis Perkahwinan Ejal & Hanah",
-      "LOCATION:Lot 574, Lorong Hj Manap, Jalan Selamat, Sungai Udang, Klang",
-      "DESCRIPTION:Jemputan Majlis Perkahwinan Ejal & Hanah",
-      "END:VEVENT",
-      "END:VCALENDAR",
-    ].join("\r\n");
-
-    const blob = new Blob([calendar], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "Ejal-Hanah-10-Januari-2027.ics";
-    link.click();
-    URL.revokeObjectURL(url);
-  }
-
-  async function shareInvitation() {
-    const data = {
-      title: "Jemputan Perkahwinan Ejal & Hanah",
-      text: "Dengan penuh kesyukuran, kami menjemput anda ke Majlis Perkahwinan Ejal & Hanah pada 10 Januari 2027.",
-      url: window.location.href,
-    };
-
-    try {
-      if (navigator.share) {
-        await navigator.share(data);
-        setShareMessage("Jemputan sedia dikongsi.");
-      } else {
-        await navigator.clipboard.writeText(window.location.href);
-        setShareMessage("Pautan telah disalin.");
-      }
-    } catch {
-      // Pengguna mungkin menutup menu kongsi.
-    }
-  }
-
-  const loadGuestNotes = useCallback(async () => {
-    try {
-      const response = await fetch("/api/rsvp?public=1", { cache: "no-store" });
-      if (response.ok) setGuestNotes((await response.json()).entries ?? []);
-    } catch {
-      // Ucapan tidak menghalang borang RSVP.
-    }
-  }, []);
-
-  useEffect(() => {
-    void loadGuestNotes();
-  }, [loadGuestNotes]);
-
-  useEffect(() => {
-    const target = new Date("2027-01-10T00:00:00+08:00").getTime();
-
-    function updateCountdown() {
-      const remaining = Math.max(0, target - Date.now());
-      setCountdown({
-        days: Math.floor(remaining / 86400000),
-        hours: Math.floor((remaining / 3600000) % 24),
-        minutes: Math.floor((remaining / 60000) % 60),
-        seconds: Math.floor((remaining / 1000) % 60),
-      });
-    }
-
-    updateCountdown();
-    const timer = window.setInterval(updateCountdown, 1000);
-    return () => window.clearInterval(timer);
-  }, []);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -303,21 +226,16 @@ export default function Home() {
           </div>
         </section>
 
-        <nav className="quick-actions" aria-label="Tindakan pantas">
-          <a href="https://goo.gl/maps/AsY9q2J9WLzWbX9n8" target="_blank" rel="noreferrer">
-            <span aria-hidden="true">⌖</span><small>Maps</small>
-          </a>
-          <a href="#rsvp">
-            <span aria-hidden="true">✓</span><small>RSVP</small>
-          </a>
-          <button type="button" onClick={saveDate}>
-            <span aria-hidden="true">□</span><small>Simpan Tarikh</small>
-          </button>
-          <button type="button" onClick={() => void shareInvitation()}>
-            <span aria-hidden="true">↗</span><small>Kongsi</small>
-          </button>
-        </nav>
-        {shareMessage && <p className="share-message" role="status">{shareMessage}</p>}
+        <a
+          className="save-date-button"
+          href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Majlis%20Perkahwinan%20Ejal%20%26%20Hanah&dates=20270110%2F20270111&details=Dengan%20penuh%20kesyukuran%2C%20anda%20dijemput%20ke%20Majlis%20Perkahwinan%20Ejal%20%26%20Hanah.&location=Lot%20574%2C%20Lorong%20Hj%20Manap%2C%20Jalan%20Selamat%2C%20Sungai%20Udang%2C%20Klang"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <span aria-hidden="true">□</span>
+          Simpan Tarikh
+        </a>
+
 
         <section className="location-section" aria-labelledby="location-title">
           <p className="section-kicker">LOKASI MAJLIS</p>
