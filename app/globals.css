@@ -59,7 +59,6 @@ fieldset { border:0; padding:0; margin:0; }
 .submit:hover { transform:translateY(-2px); box-shadow:0 13px 28px rgba(67,94,72,.3); }
 .submit:disabled { opacity:.65; cursor:wait; transform:none; }
 .submit span { font-size:19px; }
-.privacy { margin:9px 0 0; color:#96988f; font-size:10px; text-align:center; }
 .success { padding:12px 8px 5px; }
 .success>div { display:grid; place-items:center; width:66px; height:66px; margin:0 auto 15px; border-radius:50%; background:#e8f0e6; color:var(--deep); font-size:30px; }
 .success h2 { margin:0; font:600 28px Georgia,serif; }

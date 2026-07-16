@@ -176,7 +176,12 @@ export default function Home() {
       const response = await fetch("/api/rsvp", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, status, pax: Number(pax), note }),
+        body: JSON.stringify({
+          name: name.trim(),
+          status,
+          pax: status === "Hadir" ? Number(pax) : 0,
+          note: note.trim(),
+        }),
       });
 
       if (!response.ok) throw new Error();
@@ -367,7 +372,6 @@ export default function Home() {
               <textarea id="note" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Tulis pesanan ringkas jika ada" rows={2} />
               {error && <p className="error" role="alert">{error}</p>}
               <button className="submit" type="submit" disabled={sending}>{sending ? "Sedang menyimpan…" : "Hantar jawapan"} <span>→</span></button>
-              <p className="privacy">Jawapan disimpan secara terus. WhatsApp tidak akan dibuka.</p>
             </form>
           )}
         </section>
