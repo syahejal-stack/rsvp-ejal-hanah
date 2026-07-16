@@ -307,3 +307,248 @@ th { background:#f4f1e9; color:#6d746c; font-size:11px; letter-spacing:.08em; te
 .video-hero:fullscreen .scroll-cue {
   bottom:max(18px, env(safe-area-inset-bottom));
 }
+
+
+/* ===== Premium polish Ejal & Hanah ===== */
+.video-hero {
+  isolation:isolate;
+  background:#283028;
+}
+.hero-backdrop,
+.hero-video {
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+}
+.hero-backdrop {
+  z-index:0;
+  object-fit:cover;
+  transform:scale(1.12);
+  filter:blur(26px) brightness(.62) saturate(.92);
+  opacity:.92;
+}
+.hero-video {
+  z-index:1;
+  object-fit:contain;
+  object-position:center;
+  background:transparent;
+  animation:none !important;
+  transform:none !important;
+  filter:drop-shadow(0 0 20px rgba(0,0,0,.22));
+}
+.video-hero:after {
+  z-index:2;
+  background:
+    linear-gradient(to bottom,rgba(20,25,20,.14),transparent 24%,transparent 67%,rgba(14,18,14,.34)),
+    radial-gradient(circle at 50% 45%,transparent 46%,rgba(12,16,12,.22) 100%);
+}
+.hero-glow { z-index:2; opacity:.62; }
+.petal-rain { z-index:3; opacity:.72; }
+.petal-rain span:nth-child(n+8) { display:none; }
+.flower-corner { z-index:3; opacity:.38; transform-origin:center; }
+
+.open-invitation {
+  top:auto;
+  bottom:max(76px, calc(env(safe-area-inset-bottom) + 64px));
+  min-width:188px;
+  padding:13px 22px 12px;
+  border-color:rgba(246,231,202,.7);
+  background:linear-gradient(145deg,rgba(62,73,59,.78),rgba(40,48,39,.72));
+  box-shadow:0 14px 36px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.14);
+  animation:premium-button-pulse 2.5s ease-in-out infinite;
+  transition:opacity .42s ease,transform .42s ease,filter .3s ease;
+}
+.open-invitation:hover { filter:brightness(1.08); }
+.open-invitation.opening {
+  opacity:0;
+  transform:translate(-50%,12px) scale(.96);
+  pointer-events:none;
+}
+.open-invitation strong {
+  font-size:17px;
+  font-weight:500;
+  letter-spacing:.035em;
+}
+.open-invitation small { font-size:9px; opacity:.76; }
+.envelope-icon {
+  position:relative;
+  width:25px;
+  height:17px;
+  margin-bottom:7px;
+  border:1.5px solid #ead6a8;
+  border-radius:3px;
+}
+.envelope-icon:before,
+.envelope-icon:after {
+  content:"";
+  position:absolute;
+  top:2px;
+  width:16px;
+  height:1px;
+  background:#ead6a8;
+}
+.envelope-icon:before { left:0; transform:rotate(34deg); transform-origin:left; }
+.envelope-icon:after { right:0; transform:rotate(-34deg); transform-origin:right; }
+
+.invitation-control {
+  position:fixed;
+  right:14px;
+  bottom:max(16px, env(safe-area-inset-bottom));
+  z-index:50;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-width:auto;
+  padding:10px 13px;
+  background:rgba(49,59,47,.78);
+}
+.invitation-control span { font-size:11px; }
+
+.scroll-cue { z-index:4; bottom:max(19px, env(safe-area-inset-bottom)); }
+
+.invitation-copy {
+  max-width:410px;
+  margin:0 auto 20px;
+  color:#777e76;
+  font:italic 13px/1.65 Georgia,serif;
+}
+.family-section {
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:12px;
+  margin:18px 0;
+  padding:18px 12px;
+  border-top:1px solid #e6dfd3;
+  border-bottom:1px solid #e6dfd3;
+}
+.family-section div { min-width:0; }
+.family-section span,
+.family-section strong,
+.family-section small { display:block; }
+.family-section span {
+  margin-bottom:6px;
+  color:var(--gold);
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.family-section strong {
+  color:#4d584f;
+  font:600 14px/1.4 Georgia,serif;
+}
+.family-section small {
+  margin-top:4px;
+  color:#7f857e;
+  font:11px/1.45 Georgia,serif;
+}
+.family-section i { color:var(--gold); font-size:8px; }
+
+.countdown-section {
+  margin:20px 0 18px;
+  padding:20px 14px;
+  border-radius:19px;
+  background:linear-gradient(145deg,#eef3eb,#faf5eb);
+  box-shadow:inset 0 0 0 1px rgba(125,146,124,.18);
+}
+.countdown-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+  margin-top:13px;
+}
+.countdown-grid div {
+  padding:11px 4px 9px;
+  border-radius:13px;
+  background:rgba(255,255,255,.76);
+  box-shadow:0 5px 14px rgba(72,82,70,.07);
+}
+.countdown-grid strong,
+.countdown-grid span { display:block; }
+.countdown-grid strong {
+  color:var(--deep);
+  font:600 clamp(20px,6vw,28px) Georgia,serif;
+}
+.countdown-grid span {
+  margin-top:3px;
+  color:#898f88;
+  font-size:9px;
+  letter-spacing:.05em;
+}
+
+.quick-actions {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin:18px 0 6px;
+}
+.quick-actions a,
+.quick-actions button {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:70px;
+  padding:9px 4px;
+  border:1px solid #e0d9ce;
+  border-radius:15px;
+  background:#fffdfa;
+  color:var(--deep);
+  text-decoration:none;
+  cursor:pointer;
+  box-shadow:0 6px 16px rgba(74,66,52,.07);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.quick-actions a:hover,
+.quick-actions button:hover {
+  transform:translateY(-2px);
+  border-color:#aebba9;
+  box-shadow:0 9px 21px rgba(74,66,52,.11);
+}
+.quick-actions span {
+  display:grid;
+  place-items:center;
+  width:30px;
+  height:30px;
+  margin-bottom:6px;
+  border-radius:50%;
+  background:#edf2eb;
+  color:var(--deep);
+  font:600 16px Georgia,serif;
+}
+.quick-actions small {
+  color:#667067;
+  font-size:9px;
+  font-weight:700;
+  line-height:1.25;
+}
+.share-message {
+  margin:8px 0 0;
+  color:var(--sage);
+  font-size:10px;
+  font-weight:700;
+}
+
+.location-section { margin-top:22px; }
+
+@keyframes premium-button-pulse {
+  50% {
+    transform:translate(-50%,-3px) scale(1.025);
+    box-shadow:0 18px 42px rgba(0,0,0,.31),0 0 0 7px rgba(237,218,180,.08);
+  }
+}
+
+@media (max-width:380px) {
+  .quick-actions { gap:5px; }
+  .quick-actions a,.quick-actions button { min-height:66px; }
+  .quick-actions small { font-size:8px; }
+  .family-section { grid-template-columns:1fr; }
+  .family-section i { transform:rotate(45deg); }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .open-invitation { animation:none; }
+}

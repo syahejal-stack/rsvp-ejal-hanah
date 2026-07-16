@@ -22,21 +22,31 @@ export default function Home() {
   const [guestNotes, setGuestNotes] = useState<GuestNote[]>([]);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [inviteOpened, setInviteOpened] = useState(false);
+  const [opening, setOpening] = useState(false);
+  const [shareMessage, setShareMessage] = useState("");
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const backdropRef = useRef<HTMLVideoElement>(null);
 
   async function openInvitation() {
     const audio = audioRef.current;
     const video = videoRef.current;
+    const backdrop = backdropRef.current;
     if (!audio || !video) return;
 
     const hero = video.closest(".video-hero") as
       | (HTMLElement & { webkitRequestFullscreen?: () => Promise<void> | void })
       | null;
 
+    setOpening(true);
     video.muted = true;
     video.currentTime = 0;
     audio.currentTime = 0;
+    if (backdrop) {
+      backdrop.muted = true;
+      backdrop.currentTime = 0;
+    }
 
     try {
       const fullscreenPromise =
@@ -46,13 +56,17 @@ export default function Home() {
             : Promise.resolve(hero.webkitRequestFullscreen?.())
           : Promise.resolve();
 
-      const videoPromise = video.play();
-      const audioPromise = audio.play();
+      const tasks: Promise<unknown>[] = [fullscreenPromise, video.play(), audio.play()];
+      if (backdrop) tasks.push(backdrop.play());
 
-      await Promise.all([fullscreenPromise, videoPromise, audioPromise]);
-      setInviteOpened(true);
+      await Promise.all(tasks);
+      window.setTimeout(() => {
+        setInviteOpened(true);
+        setOpening(false);
+      }, 420);
       setMusicPlaying(true);
     } catch {
+      setOpening(false);
       setError("Tekan sekali lagi untuk memulakan video dan lagu.");
     }
   }
@@ -60,20 +74,84 @@ export default function Home() {
   async function toggleInvitation() {
     const audio = audioRef.current;
     const video = videoRef.current;
+    const backdrop = backdropRef.current;
     if (!audio || !video) return;
 
     if (musicPlaying) {
       audio.pause();
       video.pause();
+      backdrop?.pause();
       setMusicPlaying(false);
     } else {
       video.muted = true;
+      if (video.ended) {
+        video.currentTime = 0;
+        if (backdrop) backdrop.currentTime = 0;
+      }
       try {
-        await Promise.all([video.play(), audio.play()]);
+        const tasks: Promise<unknown>[] = [video.play(), audio.play()];
+        if (backdrop) tasks.push(backdrop.play());
+        await Promise.all(tasks);
         setMusicPlaying(true);
       } catch {
         setError("Tekan sekali lagi untuk menyambung.");
       }
+    }
+  }
+
+  async function finishVideo() {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+    } catch {
+      // Sesetengah pelayar dalam aplikasi tidak membenarkan keluar skrin penuh melalui kod.
+    }
+    window.setTimeout(() => {
+      document.getElementById("jemputan")?.scrollIntoView({ behavior: "smooth" });
+    }, 180);
+  }
+
+  function saveDate() {
+    const calendar = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Ejal & Hanah//Jemputan Perkahwinan//MS",
+      "BEGIN:VEVENT",
+      "UID:ejal-hanah-20270110@jemputan",
+      "DTSTART;VALUE=DATE:20270110",
+      "DTEND;VALUE=DATE:20270111",
+      "SUMMARY:Majlis Perkahwinan Ejal & Hanah",
+      "LOCATION:Lot 574, Lorong Hj Manap, Jalan Selamat, Sungai Udang, Klang",
+      "DESCRIPTION:Jemputan Majlis Perkahwinan Ejal & Hanah",
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n");
+
+    const blob = new Blob([calendar], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "Ejal-Hanah-10-Januari-2027.ics";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function shareInvitation() {
+    const data = {
+      title: "Jemputan Perkahwinan Ejal & Hanah",
+      text: "Dengan penuh kesyukuran, kami menjemput anda ke Majlis Perkahwinan Ejal & Hanah pada 10 Januari 2027.",
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(data);
+        setShareMessage("Jemputan sedia dikongsi.");
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        setShareMessage("Pautan telah disalin.");
+      }
+    } catch {
+      // Pengguna mungkin menutup menu kongsi.
     }
   }
 
@@ -89,6 +167,24 @@ export default function Home() {
   useEffect(() => {
     void loadGuestNotes();
   }, [loadGuestNotes]);
+
+  useEffect(() => {
+    const target = new Date("2027-01-10T00:00:00+08:00").getTime();
+
+    function updateCountdown() {
+      const remaining = Math.max(0, target - Date.now());
+      setCountdown({
+        days: Math.floor(remaining / 86400000),
+        hours: Math.floor((remaining / 3600000) % 24),
+        minutes: Math.floor((remaining / 60000) % 60),
+        seconds: Math.floor((remaining / 1000) % 60),
+      });
+    }
+
+    updateCountdown();
+    const timer = window.setInterval(updateCountdown, 1000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -119,33 +215,50 @@ export default function Home() {
     <main className="page-shell">
       <section className="video-hero" aria-label="Video Ejal dan Hanah">
         <video
-          ref={videoRef}
+          ref={backdropRef}
+          className="hero-backdrop"
           muted
-          loop
+          playsInline
+          preload="auto"
+          tabIndex={-1}
+          aria-hidden="true"
+          src="/video/video-ejal-hanah.mp4"
+        />
+        <video
+          ref={videoRef}
+          className="hero-video"
+          muted
           playsInline
           preload="auto"
           src="/video/video-ejal-hanah.mp4"
+          onEnded={() => void finishVideo()}
         >
           Pelayar anda tidak menyokong video.
         </video>
+
         <div className="hero-glow" aria-hidden="true" />
         <div className="petal-rain" aria-hidden="true">
-          {Array.from({ length: 12 }).map((_, index) => (
-            <span key={index} />
-          ))}
+          {Array.from({ length: 7 }).map((_, index) => <span key={index} />)}
         </div>
         <div className="flower-corner flower-corner-left" aria-hidden="true"><i /><b /><span /></div>
         <div className="flower-corner flower-corner-right" aria-hidden="true"><i /><b /><span /></div>
 
-        {!inviteOpened ? (
-          <button className="open-invitation" type="button" onClick={openInvitation}>
-            <span aria-hidden="true">💌</span>
+        {!inviteOpened && (
+          <button
+            className={opening ? "open-invitation opening" : "open-invitation"}
+            type="button"
+            onClick={openInvitation}
+            disabled={opening}
+          >
+            <span className="envelope-icon" aria-hidden="true" />
             <strong>Buka Jemputan</strong>
-            <small>Tekan untuk mula video &amp; lagu</small>
+            <small>Video dan lagu akan bermula</small>
           </button>
-        ) : (
+        )}
+
+        {inviteOpened && (
           <button className="invitation-control" type="button" onClick={toggleInvitation}>
-            {musicPlaying ? "Ⅱ Jeda" : "▶ Sambung"}
+            {musicPlaying ? "Ⅱ" : "▶"} <span>{musicPlaying ? "Jeda" : "Sambung"}</span>
           </button>
         )}
         <a className="scroll-cue" href="#jemputan" aria-label="Lihat maklumat jemputan">↓</a>
@@ -161,6 +274,50 @@ export default function Home() {
         <p className="eyebrow">JEMPUTAN MAJLIS PERKAHWINAN</p>
         <h1 id="page-title">Ejal <em>&amp;</em> Hanah</h1>
         <p className="date">Ahad · 10 Januari 2027</p>
+        <p className="invitation-copy">
+          Dengan penuh kesyukuran ke hadrat Allah SWT, kami menjemput
+          Dato’ / Datin / Tuan / Puan / Encik / Cik hadir meraikan hari bahagia kami.
+        </p>
+
+        <section className="family-section" aria-label="Keluarga pengantin">
+          <div>
+            <span>Pihak lelaki</span>
+            <strong>Darmiwati bt Malik</strong>
+            <small>&amp; Allahyarham Syukir bin Mail</small>
+          </div>
+          <i aria-hidden="true">◆</i>
+          <div>
+            <span>Pihak perempuan</span>
+            <strong>Karudin bin Kamarulzaman</strong>
+            <small>&amp; Ruzawati binti Ramly</small>
+          </div>
+        </section>
+
+        <section className="countdown-section" aria-label="Kiraan detik majlis">
+          <p className="section-kicker">MENUJU HARI BAHAGIA</p>
+          <div className="countdown-grid">
+            <div><strong>{countdown.days}</strong><span>Hari</span></div>
+            <div><strong>{String(countdown.hours).padStart(2, "0")}</strong><span>Jam</span></div>
+            <div><strong>{String(countdown.minutes).padStart(2, "0")}</strong><span>Minit</span></div>
+            <div><strong>{String(countdown.seconds).padStart(2, "0")}</strong><span>Saat</span></div>
+          </div>
+        </section>
+
+        <nav className="quick-actions" aria-label="Tindakan pantas">
+          <a href="https://goo.gl/maps/AsY9q2J9WLzWbX9n8" target="_blank" rel="noreferrer">
+            <span aria-hidden="true">⌖</span><small>Maps</small>
+          </a>
+          <a href="#rsvp">
+            <span aria-hidden="true">✓</span><small>RSVP</small>
+          </a>
+          <button type="button" onClick={saveDate}>
+            <span aria-hidden="true">□</span><small>Simpan Tarikh</small>
+          </button>
+          <button type="button" onClick={() => void shareInvitation()}>
+            <span aria-hidden="true">↗</span><small>Kongsi</small>
+          </button>
+        </nav>
+        {shareMessage && <p className="share-message" role="status">{shareMessage}</p>}
 
         <section className="location-section" aria-labelledby="location-title">
           <p className="section-kicker">LOKASI MAJLIS</p>
