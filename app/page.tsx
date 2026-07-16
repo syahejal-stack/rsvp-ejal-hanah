@@ -21,28 +21,46 @@ export default function Home() {
   const [done, setDone] = useState(false);
   const [guestNotes, setGuestNotes] = useState<GuestNote[]>([]);
   const [musicPlaying, setMusicPlaying] = useState(false);
-  const [videoMuted, setVideoMuted] = useState(true);
+  const [inviteOpened, setInviteOpened] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  async function toggleMusic() {
+  async function openInvitation() {
     const audio = audioRef.current;
-    if (!audio) return;
+    const video = videoRef.current;
+    if (!audio || !video) return;
 
-    if (audio.paused) {
-      videoRef.current?.pause();
-      await audio.play();
-    } else {
-      audio.pause();
+    video.muted = true;
+    video.currentTime = 0;
+    audio.currentTime = 0;
+
+    try {
+      await Promise.all([video.play(), audio.play()]);
+      setInviteOpened(true);
+      setMusicPlaying(true);
+    } catch {
+      setError("Tekan sekali lagi untuk memulakan video dan lagu.");
     }
   }
 
-  function toggleVideoSound() {
+  async function toggleInvitation() {
+    const audio = audioRef.current;
     const video = videoRef.current;
-    if (!video) return;
-    video.muted = !video.muted;
-    setVideoMuted(video.muted);
-    void video.play();
+    if (!audio || !video) return;
+
+    if (musicPlaying) {
+      audio.pause();
+      video.pause();
+      setMusicPlaying(false);
+    } else {
+      video.muted = true;
+      try {
+        await Promise.all([video.play(), audio.play()]);
+        setMusicPlaying(true);
+      } catch {
+        setError("Tekan sekali lagi untuk menyambung.");
+      }
+    }
   }
 
   const loadGuestNotes = useCallback(async () => {
@@ -88,13 +106,11 @@ export default function Home() {
       <section className="video-hero" aria-label="Video Ejal dan Hanah">
         <video
           ref={videoRef}
-          autoPlay
-          muted={videoMuted}
+          muted
           loop
           playsInline
           preload="auto"
           src="/video/video-ejal-hanah.mp4"
-          onPlay={() => audioRef.current?.pause()}
         >
           Pelayar anda tidak menyokong video.
         </video>
@@ -107,9 +123,17 @@ export default function Home() {
         <div className="flower-corner flower-corner-left" aria-hidden="true"><i /><b /><span /></div>
         <div className="flower-corner flower-corner-right" aria-hidden="true"><i /><b /><span /></div>
 
-        <button className="video-sound" type="button" onClick={toggleVideoSound}>
-          {videoMuted ? "Buka suara" : "Tutup suara"}
-        </button>
+        {!inviteOpened ? (
+          <button className="open-invitation" type="button" onClick={openInvitation}>
+            <span aria-hidden="true">💌</span>
+            <strong>Buka Jemputan</strong>
+            <small>Tekan untuk mula video &amp; lagu</small>
+          </button>
+        ) : (
+          <button className="invitation-control" type="button" onClick={toggleInvitation}>
+            {musicPlaying ? "Ⅱ Jeda" : "▶ Sambung"}
+          </button>
+        )}
         <a className="scroll-cue" href="#jemputan" aria-label="Lihat maklumat jemputan">↓</a>
       </section>
 
@@ -137,15 +161,12 @@ export default function Home() {
 
         <audio
           ref={audioRef}
-          src="/audio/lagu-ejal-hanah.mp3?v=2"
+          src="/audio/lagu-ejal-hanah.mp3?v=3"
           loop
-          preload="metadata"
+          preload="auto"
           onPause={() => setMusicPlaying(false)}
           onPlay={() => setMusicPlaying(true)}
         />
-        <button className={musicPlaying ? "music playing" : "music"} type="button" onClick={toggleMusic} aria-label={musicPlaying ? "Hentikan lagu" : "Mainkan lagu"}>
-          <span>{musicPlaying ? "Ⅱ" : "♪"}</span>{musicPlaying ? "Hentikan lagu" : "Mainkan lagu"}
-        </button>
 
         <section className="rsvp-section" id="rsvp" aria-labelledby="rsvp-title">
           <p className="section-kicker">PENGESAHAN KEHADIRAN</p>
