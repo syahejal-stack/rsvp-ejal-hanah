@@ -30,12 +30,26 @@ export default function Home() {
     const video = videoRef.current;
     if (!audio || !video) return;
 
+    const hero = video.closest(".video-hero") as
+      | (HTMLElement & { webkitRequestFullscreen?: () => Promise<void> | void })
+      | null;
+
     video.muted = true;
     video.currentTime = 0;
     audio.currentTime = 0;
 
     try {
-      await Promise.all([video.play(), audio.play()]);
+      const fullscreenPromise =
+        hero && !document.fullscreenElement
+          ? hero.requestFullscreen
+            ? hero.requestFullscreen({ navigationUI: "hide" }).catch(() => undefined)
+            : Promise.resolve(hero.webkitRequestFullscreen?.())
+          : Promise.resolve();
+
+      const videoPromise = video.play();
+      const audioPromise = audio.play();
+
+      await Promise.all([fullscreenPromise, videoPromise, audioPromise]);
       setInviteOpened(true);
       setMusicPlaying(true);
     } catch {
