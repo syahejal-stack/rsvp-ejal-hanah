@@ -109,6 +109,42 @@ export default function Home() {
     }, 180);
   }
 
+  const loadGuestNotes = useCallback(async () => {
+    try {
+      const response = await fetch("/api/rsvp?public=1", { cache: "no-store" });
+      if (response.ok) {
+        setGuestNotes((await response.json()).entries ?? []);
+      }
+    } catch {
+      // Ucapan tetamu tidak menghalang bahagian lain daripada dipaparkan.
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadGuestNotes();
+  }, [loadGuestNotes]);
+
+  useEffect(() => {
+    // 10 Januari 2027, 12:00 tengah malam waktu Malaysia (UTC+8).
+    const targetTime = Date.UTC(2027, 0, 9, 16, 0, 0);
+
+    function updateCountdown() {
+      const remaining = Math.max(0, targetTime - Date.now());
+
+      setCountdown({
+        days: Math.floor(remaining / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((remaining / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((remaining / (1000 * 60)) % 60),
+        seconds: Math.floor((remaining / 1000) % 60),
+      });
+    }
+
+    updateCountdown();
+    const timer = window.setInterval(updateCountdown, 1000);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
   async function submit(event: FormEvent) {
     event.preventDefault();
     if (!name.trim()) return setError("Sila masukkan nama anda.");
