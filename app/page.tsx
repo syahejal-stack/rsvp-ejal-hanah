@@ -137,7 +137,7 @@ export default function Home() {
 
         <audio
           ref={audioRef}
-          src="/audio/lagu-ejal-hanah.mp3"
+          src="/audio/lagu-ejal-hanah.mp3?v=2"
           loop
           preload="metadata"
           onPause={() => setMusicPlaying(false)}
