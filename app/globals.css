@@ -702,3 +702,71 @@ th { background:#f4f1e9; color:#6d746c; font-size:11px; letter-spacing:.08em; te
   transform:translateY(8px) scale(.96);
   pointer-events:none;
 }
+
+
+/* Keutamaan pembukaan: Play di atas, maklumat di bawah */
+.opening-actions.simple {
+  flex-direction:column;
+  gap:12px;
+}
+.opening-actions.simple .play-button {
+  order:1;
+  min-width:156px;
+  padding:13px 25px;
+  background:linear-gradient(145deg,rgba(66,78,63,.88),rgba(42,51,41,.84));
+  box-shadow:0 13px 30px rgba(0,0,0,.28),0 0 0 1px rgba(241,221,182,.18);
+}
+.opening-actions.simple .primary-skip {
+  order:2;
+  width:min(82vw,245px);
+  padding:10px 16px;
+  background:rgba(39,47,38,.52);
+  border-color:rgba(244,226,190,.42);
+  box-shadow:0 8px 20px rgba(0,0,0,.17);
+  font-size:13px;
+}
+.opening-actions.simple .primary-skip small {
+  margin-top:3px;
+  font-size:8px;
+  opacity:.82;
+}
+
+/* Butang kalendar tunggal, lebih ringan dan premium */
+.save-date-button {
+  margin-top:2px;
+  margin-bottom:14px;
+  padding:10px 15px;
+  font-size:10px;
+  background:rgba(255,253,250,.84);
+  border-color:#ddd5c8;
+  box-shadow:0 5px 14px rgba(74,66,52,.06);
+}
+.save-date-button .calendar-icon {
+  position:relative;
+  display:block;
+  width:20px;
+  height:18px;
+  border:1.5px solid var(--deep);
+  border-radius:4px;
+  background:transparent;
+}
+.save-date-button .calendar-icon:before {
+  content:"";
+  position:absolute;
+  left:-1.5px;
+  right:-1.5px;
+  top:4px;
+  height:1.5px;
+  background:var(--deep);
+}
+.save-date-button .calendar-icon:after {
+  content:"";
+  position:absolute;
+  left:4px;
+  top:-3px;
+  width:2px;
+  height:5px;
+  border-radius:2px;
+  background:var(--deep);
+  box-shadow:8px 0 0 var(--deep);
+}

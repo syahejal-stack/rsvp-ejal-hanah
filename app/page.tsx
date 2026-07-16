@@ -223,11 +223,6 @@ export default function Home() {
 
         {!inviteOpened && (
           <div className="opening-actions simple">
-            <button className="skip-video primary-skip" type="button" onClick={() => void skipVideo()}>
-              Terus ke maklumat majlis
-              <small>Alamat, Maps dan RSVP</small>
-            </button>
-
             <button
               className={opening ? "play-button opening" : "play-button"}
               type="button"
@@ -237,6 +232,11 @@ export default function Home() {
             >
               <span aria-hidden="true">▶</span>
               Play
+            </button>
+
+            <button className="skip-video primary-skip" type="button" onClick={() => void skipVideo()}>
+              Terus ke maklumat majlis
+              <small>Alamat, Maps dan RSVP</small>
             </button>
           </div>
         )}
@@ -294,8 +294,8 @@ export default function Home() {
           target="_blank"
           rel="noreferrer"
         >
-          <span aria-hidden="true">□</span>
-          Simpan Tarikh
+          <span className="calendar-icon" aria-hidden="true" />
+          Tambah ke Kalendar
         </a>
 
 
