@@ -23,6 +23,7 @@ export default function Home() {
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [inviteOpened, setInviteOpened] = useState(false);
   const [opening, setOpening] = useState(false);
+  const [returningVisitor, setReturningVisitor] = useState(false);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -59,6 +60,8 @@ export default function Home() {
       if (backdrop) tasks.push(backdrop.play());
 
       await Promise.all(tasks);
+      window.localStorage.setItem("ejal-hanah-opened", "1");
+      setReturningVisitor(true);
       window.setTimeout(() => {
         setInviteOpened(true);
         setOpening(false);
@@ -68,6 +71,27 @@ export default function Home() {
       setOpening(false);
       setError("Tekan sekali lagi untuk memulakan video dan lagu.");
     }
+  }
+
+  async function skipVideo() {
+    audioRef.current?.pause();
+    videoRef.current?.pause();
+    backdropRef.current?.pause();
+
+    window.localStorage.setItem("ejal-hanah-opened", "1");
+    setReturningVisitor(true);
+    setInviteOpened(true);
+    setMusicPlaying(false);
+
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+    } catch {
+      // Sesetengah browser dalam aplikasi tidak membenarkan kawalan skrin penuh.
+    }
+
+    window.setTimeout(() => {
+      document.getElementById("jemputan")?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   }
 
   async function toggleInvitation() {
@@ -122,6 +146,7 @@ export default function Home() {
 
   useEffect(() => {
     void loadGuestNotes();
+    setReturningVisitor(window.localStorage.getItem("ejal-hanah-opened") === "1");
   }, [loadGuestNotes]);
 
   useEffect(() => {
@@ -203,16 +228,32 @@ export default function Home() {
         <div className="flower-corner flower-corner-right" aria-hidden="true"><i /><b /><span /></div>
 
         {!inviteOpened && (
-          <button
-            className={opening ? "open-invitation opening" : "open-invitation"}
-            type="button"
-            onClick={openInvitation}
-            disabled={opening}
-          >
-            <span className="envelope-icon" aria-hidden="true" />
-            <strong>Buka Jemputan</strong>
-            <small>Video dan lagu akan bermula</small>
-          </button>
+          <div className={returningVisitor ? "opening-actions returning" : "opening-actions"}>
+            {returningVisitor && (
+              <button className="skip-video primary-skip" type="button" onClick={() => void skipVideo()}>
+                Terus ke maklumat majlis
+                <small>Alamat, Maps dan RSVP</small>
+              </button>
+            )}
+
+            <button
+              className={opening ? "open-invitation opening" : "open-invitation"}
+              type="button"
+              onClick={openInvitation}
+              disabled={opening}
+            >
+              <span className="envelope-icon" aria-hidden="true" />
+              <strong>{returningVisitor ? "Tonton Semula Video" : "Buka Jemputan"}</strong>
+              <small>Video dan lagu akan bermula</small>
+            </button>
+
+            {!returningVisitor && (
+              <button className="skip-video" type="button" onClick={() => void skipVideo()}>
+                Langkau video
+                <small>Terus ke alamat &amp; RSVP</small>
+              </button>
+            )}
+          </div>
         )}
 
         {inviteOpened && (
@@ -220,7 +261,7 @@ export default function Home() {
             {musicPlaying ? "Ⅱ" : "▶"} <span>{musicPlaying ? "Jeda" : "Sambung"}</span>
           </button>
         )}
-        <a className="scroll-cue" href="#jemputan" aria-label="Lihat maklumat jemputan">↓</a>
+        <span className="scroll-cue" aria-hidden="true">↓</span>
       </section>
 
       <section className="invite-zone" id="jemputan">

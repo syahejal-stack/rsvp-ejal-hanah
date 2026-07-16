@@ -588,3 +588,79 @@ th { background:#f4f1e9; color:#6d746c; font-size:11px; letter-spacing:.08em; te
   color:var(--deep);
   font:600 13px Georgia,serif;
 }
+
+
+/* Langkau video dan pengalaman lebih pantas untuk tetamu berulang */
+.opening-actions {
+  position:absolute;
+  left:50%;
+  bottom:max(65px, calc(env(safe-area-inset-bottom) + 54px));
+  z-index:5;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:9px;
+  width:min(88vw,310px);
+  transform:translateX(-50%);
+}
+.opening-actions .open-invitation {
+  position:relative;
+  left:auto;
+  top:auto;
+  bottom:auto;
+  transform:none;
+  width:auto;
+  margin:0;
+}
+.opening-actions .open-invitation.opening {
+  transform:translateY(10px) scale(.96);
+}
+.skip-video {
+  border:0;
+  padding:7px 13px;
+  background:rgba(31,38,30,.42);
+  color:rgba(255,255,255,.92);
+  border-radius:999px;
+  backdrop-filter:blur(7px);
+  cursor:pointer;
+  font-size:11px;
+  font-weight:700;
+  line-height:1.2;
+  text-shadow:0 1px 5px rgba(0,0,0,.35);
+}
+.skip-video small {
+  display:block;
+  margin-top:2px;
+  color:rgba(255,255,255,.7);
+  font-size:8px;
+  font-weight:500;
+}
+.primary-skip {
+  width:min(86vw,260px);
+  padding:13px 18px;
+  border:1px solid rgba(244,226,190,.66);
+  background:linear-gradient(145deg,rgba(62,73,59,.82),rgba(40,48,39,.76));
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:15px;
+  letter-spacing:.02em;
+}
+.primary-skip small {
+  margin-top:4px;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:9px;
+  letter-spacing:.02em;
+}
+.opening-actions.returning .open-invitation {
+  min-width:165px;
+  padding:10px 17px;
+  background:rgba(36,44,35,.55);
+  animation:none;
+}
+.opening-actions.returning .open-invitation strong {
+  font-size:13px;
+}
+.opening-actions.returning .open-invitation small,
+.opening-actions.returning .envelope-icon {
+  display:none;
+}
