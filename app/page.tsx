@@ -537,8 +537,7 @@ function KlangPage() {
         <div className="petal-rain" aria-hidden="true">
           {Array.from({ length: 7 }).map((_, index) => <span key={index} />)}
         </div>
-        <div className="flower-corner flower-corner-left" aria-hidden="true"><i /><b /><span /></div>
-        <div className="flower-corner flower-corner-right" aria-hidden="true"><i /><b /><span /></div>
+        <div className=" -left" aria-hidden="true"><i /><b /><span /></div>
 
         {!inviteOpened && (
           <div className="opening-actions simple">
